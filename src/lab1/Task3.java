@@ -34,11 +34,10 @@ public class Task3 {
         for (i = 1; i <= n - 1; i++) {
             double sum = 0;
 
-            skip:
             for (j = 0; j <= n; j++) {
-                if ((j + x) == i) {
-                    continue skip;
-                } else if ((j + x) == 0) {
+                if ((j + x) == i) continue outer;
+
+                else if ((j + x) == 0) {
                     isError = true;
                     System.err.println("\nDivider is zero.");
                     break outer;
