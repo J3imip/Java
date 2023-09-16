@@ -28,13 +28,11 @@ public class Task3 {
     private static double getProduct(int n, int x) {
         double product = 1;
 
-        int i, j;
-
         outer:
-        for (i = 1; i <= n - 1; i++) {
+        for (int i = 1; i <= n - 1; i++) {
             double sum = 0;
 
-            for (j = 0; j <= n; j++) {
+            for (int j = 0; j <= n; j++) {
                 if ((j + x) == i) continue outer;
 
                 else if ((j + x) == 0) {
