@@ -20,7 +20,6 @@ public class Task1 {
 
         return result;
     }
-
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         try {
@@ -48,8 +47,10 @@ public class Task1 {
             }
         } catch(InputMismatchException error) {
             System.err.printf("\t%s: Invalid input type (must be a double).", error);
+            System.exit(1);
         } catch(Exception error) {
             System.err.println("\t" + error);
+            System.exit(1);
         }
     }
 }

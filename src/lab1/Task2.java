@@ -31,12 +31,15 @@ public class Task2 {
                     (i == 0 || i == 1) ? (i == 1 ? 8 : 1) : k << 3 * (i-1), //a bunch of ternary operators :D
                     RESET
                 );
+
                 System.out.printf("%sArithmetic: 8 ^ %d = %d%s\n", BLUE, i, Math.round(Math.pow(k, i)), RESET);
             }
         } catch(InputMismatchException error) {
             System.err.printf("%s: input number must be an integer.", error);
+            System.exit(1);
         } catch(Exception error) {
             error.printStackTrace();
+            System.exit(1);
         }
     }
 }

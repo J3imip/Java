@@ -18,13 +18,15 @@ public class Task3 {
             }
 
             if (!isError) System.out.printf("\nResult: %f", getProduct(n, x));
+            else System.exit(1);
         } catch(InputMismatchException error) {
-            System.err.printf("%s: Numbers must be integers.", error);
+            System.err.printf("%s: Input values must be integers.", error);
+            System.exit(1 );
         } catch(Exception error) {
-            System.err.printf("%s", error);
+            error.printStackTrace();
+            System.exit(1 );
         }
     }
-
     private static double getProduct(int n, int x) {
         double product = 1;
 
