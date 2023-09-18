@@ -5,6 +5,7 @@ import java.util.Scanner;
 
 public class Task3 {
     public static boolean isError = false;
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         try {
@@ -17,16 +18,18 @@ public class Task3 {
                 throw new Exception("n must be greater than 0.");
             }
 
-            if (!isError) System.out.printf("\nResult: %f", getProduct(n, x));
+            double result = getProduct(n, x);
+            if (!isError) System.out.printf("\nResult: %f", result);
             else System.exit(1);
-        } catch(InputMismatchException error) {
-            System.err.printf("%s: Input values must be integers.", error);
-            System.exit(1 );
-        } catch(Exception error) {
+        } catch (InputMismatchException error) {
+            System.err.println("\tInput values must be integers.");
+            System.exit(1);
+        } catch (Exception error) {
             error.printStackTrace();
-            System.exit(1 );
+            System.exit(1);
         }
     }
+
     private static double getProduct(int n, int x) {
         double product = 1;
 
@@ -39,7 +42,7 @@ public class Task3 {
 
                 else if ((j + x) == 0) {
                     isError = true;
-                    System.err.println("\nDivider is zero.");
+                    System.err.println("\tDivider is zero.");
                     break outer;
                 }
 
