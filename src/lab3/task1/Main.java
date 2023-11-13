@@ -8,7 +8,12 @@ import java.util.*;
  * Main class for task1.
  * @version 1.0 10 Nov 2023
  */
-public class Program {
+public class Main {
+    /**
+     * Constructor for Main class.
+     */
+    Main() {}
+
     /**
      * Generates random date between start of current month and end of next month.
      * @return random date.
@@ -61,12 +66,12 @@ public class Program {
                 ConsoleColors.PURPLE + "\nPhoneWithArray: \n" + ConsoleColors.RESET
         );
         System.out.println(ConsoleColors.GREEN + phoneWithArray + ConsoleColors.RESET);
-        System.out.println(ConsoleColors.YELLOW + "\nAverage price per day: " + phoneWithArray.getAveragePricePerPeriod(
-                LocalDateTime.now().minusDays(1),
+        System.out.println(ConsoleColors.YELLOW + "\nAverage price per day by last 15 days: " + phoneWithArray.getAveragePricePerPeriod(
+                LocalDateTime.now().minusDays(15),
                 LocalDateTime.now()
         ) + "$" + ConsoleColors.RESET);
-        System.out.println(ConsoleColors.YELLOW + "Days when cost of minute exceeded threshold: " +
-                phoneWithArray.getDaysWithPricePerMinuteAbove(2) + ConsoleColors.RESET
+        System.out.println(ConsoleColors.YELLOW + "Days when cost of minute exceeded 1$ threshold: " +
+                phoneWithArray.getDaysWithPricePerMinuteAbove(1) + ConsoleColors.RESET
         );
         System.out.println(ConsoleColors.YELLOW + "Days with even price of conversation minute: " + ConsoleColors.RESET);
         phoneWithArray.getDaysWithEvenMinutes().forEach((date) ->
@@ -84,6 +89,11 @@ public class Program {
      * Console colors class.
      */
     public static class ConsoleColors {
+        /**
+         * Constructor for ConsoleColors class.
+         */
+        ConsoleColors() {}
+
         // ANSI escape codes for text colors
         public static final String RESET = "\u001B[0m";
         public static final String RED = "\u001B[31m";

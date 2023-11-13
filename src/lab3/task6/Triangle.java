@@ -3,10 +3,8 @@ package lab3.task6;
 import java.util.Arrays;
 import java.util.Comparator;
 
-public class Main {
-    private double a;
-    private double b;
-    private double c;
+public class Triangle {
+    private final double a, b, c;
 
     public Triangle(double a, double b, double c) {
         this.a = a;
