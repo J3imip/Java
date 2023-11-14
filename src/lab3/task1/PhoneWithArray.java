@@ -2,9 +2,7 @@ package lab3.task1;
 
 import java.security.InvalidParameterException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -14,18 +12,18 @@ import java.util.Map;
  * @see Phone
  */
 sealed public class PhoneWithArray extends Phone permits PhoneWithSorting {
-    List<Call> calls;
+    Call[] calls;
 
     /**
      * Constructor for PhoneWithArray class.
      * @param countryCode - country code of phone number. Must be less or equals MAX_CODE_LENGTH characters.
      * @param number      - phone number. Must be less or equals MAX_PHONE_LENGTH characters.
      * @param operator    - operator name.
-     * @param calls       - list of calls.
+     * @param calls       - array of calls.
      */
-    public PhoneWithArray(int countryCode, String number, String operator, List<Call> calls) {
+    public PhoneWithArray(int countryCode, String number, String operator, Call[] calls) {
         super(countryCode, number, operator);
-        this.calls = calls;
+        this.calls = calls.clone();
     }
 
     /**
@@ -52,9 +50,9 @@ sealed public class PhoneWithArray extends Phone permits PhoneWithSorting {
 
     /**
      * Gets days with even duration of conversation minute.
-     * @return list of days with even duration of conversation minute.
+     * @return array of days with even duration of conversation minute.
      */
-    public List<LocalDateTime> getDaysWithEvenMinutes() {
+    public LocalDateTime[] getDaysWithEvenMinutes() {
         Map<LocalDateTime, Integer> totalDurationPerDay = new HashMap<>();
 
         for (Call call : calls) {
@@ -64,10 +62,13 @@ sealed public class PhoneWithArray extends Phone permits PhoneWithSorting {
             totalDurationPerDay.merge(callDate, (int) callDuration, Integer::sum);
         }
 
-        List<LocalDateTime> oddDurationDays = new ArrayList<>();
+        long count = totalDurationPerDay.values().stream().filter(value -> value % 2 == 0).count();
+        LocalDateTime[] oddDurationDays = new LocalDateTime[(int)count];
+
         for (Map.Entry<LocalDateTime, Integer> entry : totalDurationPerDay.entrySet()) {
             if (entry.getValue() % 2 == 0) {
-                oddDurationDays.add(entry.getKey());
+                oddDurationDays[(int)count - 1] = entry.getKey();
+                count--;
             }
         }
 
@@ -177,12 +178,14 @@ sealed public class PhoneWithArray extends Phone permits PhoneWithSorting {
      * Sorts calls by duration using bubble sort descending.
      */
     public void sortByDuration() {
-        for (int i = 0; i < calls.size() - 1; i++) {
-            for (int j = 0; j < calls.size() - i - 1; j++) {
-                if (calls.get(j).getDuration() < calls.get(j + 1).getDuration()) {
-                    Call temp = calls.get(j);
-                    calls.set(j, calls.get(j + 1));
-                    calls.set(j + 1, temp);
+        int n = calls.length;
+
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = 0; j < n - i - 1; j++) {
+                if (calls[j].getDuration() < calls[j + 1].getDuration()) {
+                    Call temp = calls[j];
+                    calls[j] = calls[j + 1];
+                    calls[j + 1] = temp;
                 }
             }
         }
@@ -192,16 +195,18 @@ sealed public class PhoneWithArray extends Phone permits PhoneWithSorting {
      * Sorts calls by price using insertion sort ascending.
      */
     public void sortByPrice() {
-        for (int i = 1; i < calls.size(); i++) {
-            Call key = calls.get(i);
+        int n = calls.length;
+
+        for (int i = 1; i < n; i++) {
+            Call key = calls[i];
             int j = i - 1;
 
-            while (j >= 0 && calls.get(j).getPrice() > key.getPrice()) {
-                calls.set(j + 1, calls.get(j));
+            while (j >= 0 && calls[j].getPrice() > key.getPrice()) {
+                calls[j + 1] = calls[j];
                 j--;
             }
 
-            calls.set(j + 1, key);
+            calls[j + 1] = key;
         }
     }
 }

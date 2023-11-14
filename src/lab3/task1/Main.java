@@ -15,27 +15,28 @@ public class Main {
      */
     public static void main(String[] args) {
         try {
-            List<Call> calls = new ArrayList<>();
+            Call[] callsArray = new Call[10];
             for (int i = 0; i < 10; i++) {
-                calls.add(new Call(
+                callsArray[i] = new Call(
                         generateRandomDate(),
                         new Random().nextDouble() * 100,
                         new Random().nextDouble() * 100
-                ));
+                );
             }
 
             // PhoneWithArray
-            PhoneWithArray phoneWithArray = new PhoneWithArray(380, "9922112233", "vodafone", calls);
+            PhoneWithArray phoneWithArray = new PhoneWithArray(380, "9922112233", "vodafone", callsArray);
             PrintPhone(phoneWithArray);
 
             // PhoneWithSorting
-            PhoneWithSorting phoneWithSorting = new PhoneWithSorting(380, "6633221144", "vodafone", calls);
+            PhoneWithSorting phoneWithSorting = new PhoneWithSorting(380, "6633221144", "vodafone", callsArray);
             PrintPhone(phoneWithSorting);
         } catch (Exception err) {
             err.printStackTrace();
             System.exit(1);
         }
     }
+
 
     /**
      * Generates random date between start of current month and end of next month.
@@ -70,9 +71,13 @@ public class Main {
                 phoneWithArray.getDaysWithPricePerMinuteAbove(1) + ConsoleColors.RESET
         );
         System.out.println(ConsoleColors.YELLOW + "Days with even price of conversation minute: " + ConsoleColors.RESET);
-        phoneWithArray.getDaysWithEvenMinutes().forEach((date) ->
-                System.out.println(ConsoleColors.CYAN + "\t" + date.toLocalDate() + ConsoleColors.RESET)
-        );
+
+        LocalDateTime[] daysWithEvenMinutes = phoneWithArray.getDaysWithEvenMinutes();
+
+        for (int i = daysWithEvenMinutes.length - 1; i >= 0; i--) {
+            System.out.println(ConsoleColors.CYAN + "\t" + daysWithEvenMinutes[i].toLocalDate() + ConsoleColors.RESET);
+        }
+
         System.out.println(ConsoleColors.BLUE + "\nSorted by Duration:" + ConsoleColors.RESET);
         phoneWithArray.sortByDuration();
         System.out.println(ConsoleColors.GREEN + phoneWithArray + ConsoleColors.RESET);
