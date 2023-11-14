@@ -10,26 +10,6 @@ import java.util.*;
  */
 public class Main {
     /**
-     * Constructor for Main class.
-     */
-    Main() {}
-
-    /**
-     * Generates random date between start of current month and end of next month.
-     * @return random date.
-     */
-    public static LocalDateTime generateRandomDate() {
-        LocalDateTime startOfMonth = LocalDateTime.now().withDayOfMonth(1);
-        LocalDateTime endOfMonth = LocalDateTime.now().plusMonths(1).withDayOfMonth(1).minusNanos(1);
-        long startMillis = startOfMonth.toEpochSecond(ZoneOffset.UTC);
-        long endMillis = endOfMonth.toEpochSecond(ZoneOffset.UTC);
-
-        Random random = new Random();
-        long randomMillis = startMillis + (long) (random.nextDouble() * (endMillis - startMillis));
-        return  LocalDateTime.ofEpochSecond(randomMillis, 0, ZoneOffset.UTC);
-    }
-
-    /**
      * Main method for task1.
      * @param args - command line arguments.
      */
@@ -53,7 +33,23 @@ public class Main {
             PrintPhone(phoneWithSorting);
         } catch (Exception err) {
             err.printStackTrace();
+            System.exit(1);
         }
+    }
+
+    /**
+     * Generates random date between start of current month and end of next month.
+     * @return random date.
+     */
+    public static LocalDateTime generateRandomDate() {
+        LocalDateTime startOfMonth = LocalDateTime.now().withDayOfMonth(1);
+        LocalDateTime endOfMonth = LocalDateTime.now().plusMonths(1).withDayOfMonth(1).minusNanos(1);
+        long startMillis = startOfMonth.toEpochSecond(ZoneOffset.UTC);
+        long endMillis = endOfMonth.toEpochSecond(ZoneOffset.UTC);
+
+        Random random = new Random();
+        long randomMillis = startMillis + (long) (random.nextDouble() * (endMillis - startMillis));
+        return  LocalDateTime.ofEpochSecond(randomMillis, 0, ZoneOffset.UTC);
     }
 
     /**
@@ -103,4 +99,9 @@ public class Main {
         public static final String PURPLE = "\u001B[35m";
         public static final String CYAN = "\u001B[36m";
     }
+
+    /**
+     * Constructor for Main class.
+     */
+    Main() {}
 }
