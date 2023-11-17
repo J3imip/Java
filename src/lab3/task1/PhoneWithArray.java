@@ -1,9 +1,6 @@
 package lab3.task1;
 
 import java.security.InvalidParameterException;
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Phone class with array of calls. Implements Phone class.
@@ -26,80 +23,6 @@ sealed public class PhoneWithArray extends Phone permits PhoneWithSorting {
         this.calls = calls.clone();
     }
 
-    /**
-     * Gets average price per period.
-     * @param start - start date of period.
-     * @param end   - end date of period.
-     * @return average price per period.
-     */
-    public double getAveragePricePerPeriod(LocalDateTime start, LocalDateTime end) {
-        double totalPrice = 0;
-        int days = 0;
-
-        for (Call call : calls) {
-            LocalDateTime callDate = call.getDate();
-
-            if (!callDate.isBefore(start) && !callDate.isAfter(end)) {
-                totalPrice += call.getPrice();
-                days++;
-            }
-        }
-
-        return days == 0 ? 0 : Math.round((totalPrice / days) * 100.0) / 100.0;
-    }
-
-    /**
-     * Gets days with even duration of conversation minute.
-     * @return array of days with even duration of conversation minute.
-     */
-    public LocalDateTime[] getDaysWithEvenMinutes() {
-        Map<LocalDateTime, Integer> totalDurationPerDay = new HashMap<>();
-
-        for (Call call : calls) {
-            LocalDateTime callDate = call.getDate();
-            double callDuration = call.getDuration();
-
-            totalDurationPerDay.merge(callDate, (int) callDuration, Integer::sum);
-        }
-
-        long count = totalDurationPerDay.values().stream().filter(value -> value % 2 == 0).count();
-        LocalDateTime[] oddDurationDays = new LocalDateTime[(int)count];
-
-        for (Map.Entry<LocalDateTime, Integer> entry : totalDurationPerDay.entrySet()) {
-            if (entry.getValue() % 2 == 0) {
-                oddDurationDays[(int)count - 1] = entry.getKey();
-                count--;
-            }
-        }
-
-        return oddDurationDays;
-    }
-
-    /**
-     * Gets days when cost of minute exceeded threshold.
-     * @param threshold - threshold of price per minute.
-     * @return number of days when cost of minute exceeded threshold.
-     */
-    public int getDaysWithPricePerMinuteAbove(double threshold) {
-        Map<LocalDateTime, Double> totalCostPerDay = new HashMap<>();
-
-        for (Call call : calls) {
-            LocalDateTime callDate = call.getDate();
-            double costPerMinute = call.getPrice() / call.getDuration();
-
-            totalCostPerDay.merge(callDate.toLocalDate().atStartOfDay(), costPerMinute, Double::sum);
-        }
-
-        int daysAboveThreshold = 0;
-        for (Map.Entry<LocalDateTime, Double> entry : totalCostPerDay.entrySet()) {
-            if (entry.getValue() > threshold) {
-                daysAboveThreshold++;
-            }
-        }
-
-        return daysAboveThreshold;
-    }
-
     @Override
     public String toString() {
         StringBuilder callsString = new StringBuilder();
@@ -111,7 +34,7 @@ sealed public class PhoneWithArray extends Phone permits PhoneWithSorting {
                                 Country code: %d
                                 Number:       %s
                                 Operator:     %s
-                                Calls: 
+                                Calls:
                                 """,
                         countryCode,
                         number,
@@ -125,6 +48,11 @@ sealed public class PhoneWithArray extends Phone permits PhoneWithSorting {
 
         callsString.append("-============-");
         return callsString.toString();
+    }
+
+    @Override
+    public Call[] getCalls() {
+        return calls;
     }
 
     @Override
@@ -174,39 +102,67 @@ sealed public class PhoneWithArray extends Phone permits PhoneWithSorting {
         this.operator = operator;
     }
 
-    /**
-     * Sorts calls by duration using bubble sort descending.
-     */
-    public void sortByDuration() {
-        int n = calls.length;
+    public static void main(String[] args) {
+        // Creating some sample calls for testing
+        Call[] calls = {
+                new Call(Main.generateRandomDate(), 10.5, 50),
+                new Call(Main.generateRandomDate(), 8.2, 40),
+                new Call(Main.generateRandomDate(), 15.0, 70)
+        };
 
-        for (int i = 0; i < n - 1; i++) {
-            for (int j = 0; j < n - i - 1; j++) {
-                if (calls[j].getDuration() < calls[j + 1].getDuration()) {
-                    Call temp = calls[j];
-                    calls[j] = calls[j + 1];
-                    calls[j + 1] = temp;
-                }
-            }
+        // Creating an instance of PhoneWithArray for testing
+        PhoneWithArray phone = new PhoneWithArray(380, "123456789", "Operator", calls);
+
+        testSortByDuration(phone);
+        testSortByPrice(phone);
+        testSetCountryCode(phone);
+        testSetNumber(phone);
+    }
+
+    private static void testSetNumber(Phone phone) {
+        // Test setting a valid phone number
+        phone.setNumber("987654321");
+        System.out.println("Phone number set successfully: " + phone.getNumber());
+
+        // Test setting an invalid phone number
+        try {
+            phone.setNumber("123456789123456789");
+        } catch (InvalidParameterException err) {
+            System.out.println("Invalid phone number: " + err.getMessage());
         }
     }
 
-    /**
-     * Sorts calls by price using insertion sort ascending.
-     */
-    public void sortByPrice() {
-        int n = calls.length;
+    private static void testSetCountryCode(Phone phone) {
+        // Test setting a valid country code
+        phone.setCountryCode(380);
+        System.out.println("Country code set successfully: " + phone.getCountryCode());
 
-        for (int i = 1; i < n; i++) {
-            Call key = calls[i];
-            int j = i - 1;
-
-            while (j >= 0 && calls[j].getPrice() > key.getPrice()) {
-                calls[j + 1] = calls[j];
-                j--;
-            }
-
-            calls[j + 1] = key;
+        try {
+            // Test setting an invalid country code
+            phone.setCountryCode(380123);
+        } catch (InvalidParameterException err) {
+            System.out.println("Invalid country code: " + err.getMessage());
         }
+    }
+
+    private static void testSortByDuration(PhoneWithArray phone) {
+        System.out.println("Calls sorted by duration:");
+        printCalls(phone.getCalls()); // Before sorting
+        phone.sortByDuration();
+        printCalls(phone.getCalls()); // After sorting
+    }
+
+    private static void testSortByPrice(PhoneWithArray phone) {
+        System.out.println("Calls sorted by price:");
+        printCalls(phone.getCalls()); // Before sorting
+        phone.sortByPrice();
+        printCalls(phone.getCalls()); // After sorting
+    }
+
+    private static void printCalls(Call[] calls) {
+        for (Call call : calls) {
+            System.out.println(call);
+        }
+        System.out.println("-----------------------");
     }
 }
