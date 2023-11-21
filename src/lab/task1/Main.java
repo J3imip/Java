@@ -74,9 +74,10 @@ public class Main {
                 phone.getDaysWithPricePerMinuteAbove(1) + ConsoleColors.RESET
         );
         System.out.println(ConsoleColors.YELLOW + "Days with even price of conversation minute: " + ConsoleColors.RESET);
-        phone.getDaysWithEvenMinutes().forEach((date) ->
-                System.out.println(ConsoleColors.CYAN + "\t" + date.toLocalDate() + ConsoleColors.RESET)
-        );
+        LocalDateTime[] daysWithEvenMinutes = phone.getDaysWithEvenMinutes();
+        for (LocalDateTime daysWithEvenMinute : daysWithEvenMinutes) {
+            System.out.println(ConsoleColors.YELLOW + daysWithEvenMinute + ConsoleColors.RESET);
+        }
         System.out.println(ConsoleColors.BLUE + "\nSorted by Duration:" + ConsoleColors.RESET);
         phone.sortByDuration();
         System.out.println(ConsoleColors.GREEN + phone + ConsoleColors.RESET);

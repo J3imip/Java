@@ -1,12 +1,13 @@
 package lab.task1;
 
+import java.security.InvalidParameterException;
 import java.time.LocalDateTime;
 import java.util.*;
 
 /**
  * Abstract phone class. Contains country code, number and operator name.
  *
- * @version 2.0 20 Nov 2023
+ * @version 1.0 10 Nov 2023
  * @see PhoneWithArrayList
  * @see PhoneWithSortedSet
  */
@@ -34,43 +35,68 @@ public abstract class Phone {
      * Gets calls.
      * @return calls.
      */
-    public abstract List<Call> getCalls();
+    public abstract Call[] getCalls();
 
     /**
      * Gets phone number.
      * @return phone number.
      */
-    public abstract String getNumber();
+    public String getNumber() {
+        return number;
+    };
 
     /**
      * Sets phone number.
      * @param number - phone number.
      */
-    public abstract void setNumber(String number);
+    public void setNumber(String number) {
+        if (number.length() > MAX_PHONE_LENGTH) {
+            throw new IllegalArgumentException("Phone number must be less or equals " + MAX_PHONE_LENGTH + " characters");
+        }
+
+        this.number = number;
+    }
 
     /**
      * Gets country code.
      * @return country code.
      */
-    public abstract int getCountryCode();
+    public int getCountryCode() {
+        return countryCode;
+    }
 
     /**
      * Sets country code.
      * @param countryCode - country code.
      */
-    public abstract void setCountryCode(int countryCode);
+    public void setCountryCode(int countryCode) {
+        int codeLength = String.valueOf(countryCode).length();
+
+        if (codeLength > MAX_CODE_LENGTH) {
+            throw new InvalidParameterException(String.format(
+                    "The country code length must less or equals %d characters, not %d.",
+                    MAX_CODE_LENGTH,
+                    codeLength
+            ));
+        }
+        this.countryCode = countryCode;
+    }
 
     /**
      * Gets operator name.
      * @return operator name.
      */
-    public abstract String getOperator();
+    public String getOperator() {
+        return operator;
+    }
 
     /**
      * Sets operator name.
      * @param operator - operator name.
      */
-    public abstract void setOperator(String operator);
+    public void setOperator(String operator) {
+        this.operator = operator;
+    }
 
     @Override
     public String toString() {
@@ -103,7 +129,7 @@ public abstract class Phone {
      * Gets days with even duration of conversation minute.
      * @return array of days with even duration of conversation minute.
      */
-    public List<LocalDateTime> getDaysWithEvenMinutes() {
+    public LocalDateTime[] getDaysWithEvenMinutes() {
         Map<LocalDateTime, Integer> totalDurationPerDay = new HashMap<>();
 
         for (Call call : getCalls()) {
@@ -113,15 +139,17 @@ public abstract class Phone {
             totalDurationPerDay.merge(callDate, (int) callDuration, Integer::sum);
         }
 
-        List<LocalDateTime> evenDurationDays = new ArrayList<>();
+        long count = totalDurationPerDay.values().stream().filter(value -> value % 2 == 0).count();
+        LocalDateTime[] oddDurationDays = new LocalDateTime[(int)count];
 
         for (Map.Entry<LocalDateTime, Integer> entry : totalDurationPerDay.entrySet()) {
             if (entry.getValue() % 2 == 0) {
-                evenDurationDays.add(entry.getKey());
+                oddDurationDays[(int)count - 1] = entry.getKey();
+                count--;
             }
         }
 
-        return evenDurationDays;
+        return oddDurationDays;
     }
 
     /**
@@ -153,14 +181,14 @@ public abstract class Phone {
      * Sorts calls by duration using bubble sort descending.
      */
     public void sortByDuration() {
-        int n = getCalls().size();
+        int n = getCalls().length;
 
         for (int i = 0; i < n - 1; i++) {
             for (int j = 0; j < n - i - 1; j++) {
-                if (getCalls().get(j).getDuration() < getCalls().get(j + 1).getDuration()) {
-                    Call temp = getCalls().get(j);
-                    getCalls().set(j, getCalls().get(j + 1));
-                    getCalls().set(j + 1,  temp);
+                if (getCalls()[j].getDuration() < getCalls()[j + 1].getDuration()) {
+                    Call temp = getCalls()[j];
+                    getCalls()[j] = getCalls()[j + 1];
+                    getCalls()[j + 1] = temp;
                 }
             }
         }
@@ -170,16 +198,16 @@ public abstract class Phone {
      * Sorts calls by price using insertion sort ascending.
      */
     public void sortByPrice() {
-        for (int i = 1; i < getCalls().size(); i++) {
-            Call key = getCalls().get(i);
+        for (int i = 1; i < getCalls().length; i++) {
+            Call key = getCalls()[i];
             int j = i - 1;
 
-            while (j >= 0 && getCalls().get(j).getPrice() > key.getPrice()) {
-                getCalls().set(j + 1, getCalls().get(j));
+            while (j >= 0 && getCalls()[j].getPrice() > key.getPrice()) {
+                getCalls()[j + 1] = getCalls()[j];
                 j--;
             }
 
-            getCalls().set(j + 1, key);
+            getCalls()[j + 1] = key;
         }
     }
 
@@ -219,38 +247,8 @@ public abstract class Phone {
             );
 
             @Override
-            public List<Call> getCalls() {
-                return calls;
-            }
-
-            @Override
-            public String getNumber() {
-                return number;
-            }
-
-            @Override
-            public void setNumber(String number) {
-                this.number = number;
-            }
-
-            @Override
-            public int getCountryCode() {
-                return countryCode;
-            }
-
-            @Override
-            public void setCountryCode(int countryCode) {
-                this.countryCode = countryCode;
-            }
-
-            @Override
-            public String getOperator() {
-                return operator;
-            }
-
-            @Override
-            public void setOperator(String operator) {
-                this.operator = operator;
+            public Call[] getCalls() {
+                return calls.toArray(new Call[0]);
             }
         };
 
@@ -293,9 +291,11 @@ public abstract class Phone {
 
     private static void testGetDaysWithEvenMinutes(Phone phone) {
         // Test the getDaysWithEvenMinutes method
-        List<LocalDateTime> daysWithEvenMinutes = phone.getDaysWithEvenMinutes();
+        LocalDateTime[] daysWithEvenMinutes = phone.getDaysWithEvenMinutes();
         System.out.println("Days with even minutes:");
-        daysWithEvenMinutes.forEach(System.out::println);
+        for (LocalDateTime daysWithEvenMinute : daysWithEvenMinutes) {
+            System.out.println(daysWithEvenMinute);
+        }
     }
 
     private static void testGetDaysWithPricePerMinuteAbove(Phone phone) {

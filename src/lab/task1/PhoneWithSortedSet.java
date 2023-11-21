@@ -53,55 +53,8 @@ public class PhoneWithSortedSet extends Phone {
     }
 
     @Override
-    public List<Call> getCalls() {
-        return new ArrayList<>(calls);
-    }
-
-    @Override
-    public String getNumber() {
-        return super.number;
-    }
-
-    @Override
-    public void setNumber(String number) {
-        if (number.length() > MAX_PHONE_LENGTH) {
-            throw new InvalidParameterException(String.format(
-                    "The country code length must less or equals %d characters, not %d.",
-                    MAX_PHONE_LENGTH,
-                    number.length()
-            ));
-        }
-
-        super.number = number;
-    }
-
-    @Override
-    public int getCountryCode() {
-        return super.countryCode;
-    }
-
-    @Override
-    public void setCountryCode(int countryCode) {
-        int codeLength = String.valueOf(countryCode).length();
-
-        if (codeLength > MAX_CODE_LENGTH) {
-            throw new InvalidParameterException(String.format(
-                    "The country code length must less or equals %d characters, not %d.",
-                    MAX_CODE_LENGTH,
-                    codeLength
-            ));
-        }
-        this.countryCode = countryCode;
-    }
-
-    @Override
-    public String getOperator() {
-        return super.operator;
-    }
-
-    @Override
-    public void setOperator(String operator) {
-        this.operator = operator;
+    public Call[] getCalls() {
+        return calls.toArray(new Call[0]);
     }
 
     /**
