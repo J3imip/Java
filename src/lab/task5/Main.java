@@ -10,7 +10,6 @@ public class Main {
 
         String[] wordsArray = sentence.toLowerCase().split("[\\s,.]+");
 
-        //create SortedSet and sort words in alphabetical order
         SortedSet<String> uniqueWords = new TreeSet<>(Arrays.asList(wordsArray));
 
         System.out.println("Unique words in alphabetical order: ");

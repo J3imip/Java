@@ -1,9 +1,6 @@
 package lab.task7;
 
-import java.util.AbstractList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 class CustomArray<T> extends AbstractList<T> implements Collection<T> {
     private final int from;
@@ -21,16 +18,23 @@ class CustomArray<T> extends AbstractList<T> implements Collection<T> {
 
     @Override
     public int size() {
-        return to - from + 1;
+        return array.length;
+    }
+
+    private int convertIndex(int index) {
+        if (index < from || index > to) {
+            throw new IndexOutOfBoundsException("Index is out of range");
+        }
+        return index - from;
     }
 
     @Override
     public T get(int index) {
-        if (index >= size() / 2 + 1) {
+        if (checkIndex(index)) {
             throw new IndexOutOfBoundsException("Index is out of range");
         }
 
-        return array[size() / 2 + index];
+        return array[convertIndex(index)];
     }
 
     @Override
@@ -40,11 +44,12 @@ class CustomArray<T> extends AbstractList<T> implements Collection<T> {
 
     @Override
     public T set(int index, T element) {
-        if (index >= size() / 2 + 1) {
+        if (checkIndex(index)) {
             throw new IndexOutOfBoundsException("Index is out of range");
         }
-        T oldValue = array[index + size() / 2];
-        array[index + size() / 2] = element;
+
+        T oldValue = array[convertIndex(index)];
+        array[convertIndex(index)] = element;
         return oldValue;
     }
 
@@ -67,18 +72,22 @@ class CustomArray<T> extends AbstractList<T> implements Collection<T> {
             }
         };
     }
+
+    private boolean checkIndex(int index) {
+        return index < from || index > to;
+    }
 }
 
 public class Main {
     public static void main(String[] args) {
         try {
-            int from = -10, to = 10;
+            int from = -4, to = 6;
             CustomArray<Integer> array = new CustomArray<>(from, to);
             for (int i = from; i <= to; i++) {
                 array.set(i, i);
             }
             System.out.println("Array: " + array);
-            System.out.println("Array element by index -5: " + array.get(-5));
+            System.out.println("Array element by index -4: " + array.get(-4));
             System.out.println("Size: " + array.size());
 
             System.out.println("Iterating through the array:");
