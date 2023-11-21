@@ -18,16 +18,14 @@ public class Main {
             ArrayList<Call> arrayListCalls = new ArrayList<>();
             SortedSet<Call> sortedSetCalls = new TreeSet<>();
             for (int i = 0; i < 10; i++) {
-                arrayListCalls.add(new Call(
+                Call call = new Call(
                         generateRandomDate(),
                         new Random().nextDouble() * 100,
                         new Random().nextDouble() * 100
-                ));
-                sortedSetCalls.add(new Call(
-                        generateRandomDate(),
-                        new Random().nextDouble() * 100,
-                        new Random().nextDouble() * 100
-                ));
+                );
+
+                arrayListCalls.add(call);
+                sortedSetCalls.add(call);
             }
 
             // PhoneWithArray
