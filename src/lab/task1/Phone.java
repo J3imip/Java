@@ -1,5 +1,6 @@
 package lab.task1;
 
+import java.io.*;
 import java.security.InvalidParameterException;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -11,7 +12,7 @@ import java.util.*;
  * @see PhoneWithArrayList
  * @see PhoneWithSortedSet
  */
-public abstract class Phone {
+public abstract class Phone implements Serializable {
     public final int MAX_CODE_LENGTH = 4; // max length of country code and phone number
     public final int MAX_PHONE_LENGTH = 15; // max length of phone number
 
@@ -30,6 +31,8 @@ public abstract class Phone {
         setNumber(number);
         setOperator(operator);
     }
+
+    public Phone() { }
 
     /**
      * Gets calls.
@@ -319,3 +322,4 @@ public abstract class Phone {
         System.out.println("Hash codes: " + phone1.hashCode() + " " + phone2.hashCode());
     }
 }
+

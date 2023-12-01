@@ -1,5 +1,6 @@
 package lab.task1;
 
+import java.io.Serializable;
 import java.security.InvalidParameterException;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -20,7 +21,7 @@ public class PhoneWithArrayList extends Phone {
      * @param operator    - operator name.
      * @param calls       - ArrayList of calls.
      */
-    public PhoneWithArrayList(int countryCode, String number, String operator, ArrayList<Call> calls) {
+    public PhoneWithArrayList(int countryCode, String number, String operator, ArrayList<Call> calls)  {
         super(countryCode, number, operator);
         this.calls = calls;
     }

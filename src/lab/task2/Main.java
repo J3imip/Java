@@ -1,92 +1,93 @@
 package lab.task2;
 
-import java.time.LocalDate;
+import java.io.*;
+import java.util.*;
+
+// Клас для порівняння цілих чисел за збільшенням суми цифр
+class CompareBySumOfDigits implements Comparator<Integer> {
+    // Метод для обчислення суми цифр числа
+    private int getSumOfDigits(int number) {
+        int sum = 0;
+        while (number > 0) {
+            sum += number % 10;
+            number /= 10;
+        }
+        return sum;
+    }
+
+    @Override
+    public int compare(Integer num1, Integer num2) {
+        int sum1 = getSumOfDigits(num1);
+        int sum2 = getSumOfDigits(num2);
+        return Integer.compare(sum1, sum2);
+    }
+}
+
+// Клас для порівняння цілих чисел за зменшенням суми цифр
+class CompareByReverseSumOfDigits implements Comparator<Integer> {
+    // Метод для обчислення суми цифр числа
+    private int getSumOfDigits(int number) {
+        int sum = 0;
+        while (number > 0) {
+            sum += number % 10;
+            number /= 10;
+        }
+        return sum;
+    }
+
+    @Override
+    public int compare(Integer num1, Integer num2) {
+        int sum1 = getSumOfDigits(num1);
+        int sum2 = getSumOfDigits(num2);
+        return Integer.compare(sum2, sum1);
+    }
+}
 
 public class Main {
-    public enum MonthName {
-        JANUARY(31, "Січень", Season.WINTER),
-        FEBRUARY(28, "Лютий", Season.WINTER),
-        MARCH(31, "Березень", Season.SPRING),
-        APRIL(30, "Квітень", Season.SPRING),
-        MAY(31, "Травень", Season.SPRING),
-        JUNE(30, "Червень", Season.SUMMER),
-        JULY(31, "Липень", Season.SUMMER),
-        AUGUST(31, "Серпень", Season.SUMMER),
-        SEPTEMBER(30, "Вересень", Season.AUTUMN),
-        OCTOBER(31, "Жовтень", Season.AUTUMN),
-        NOVEMBER(30, "Листопад", Season.AUTUMN),
-        DECEMBER(31, "Грудень", Season.WINTER);
+    // Статичний метод для читання, сортування та запису в файли
+    public static void sortAndWriteToFile(String inputFileName, String outputAscFileName, String outputDescFileName) {
+        List<Integer> numbers = new ArrayList<>();
 
-        private final int days;
-        private final String nameUA;
-        private final Season season;
-
-        MonthName(int days, String nameUA, Season season) {
-            this.days = days;
-            this.nameUA = nameUA;
-            this.season = season;
-        }
-
-        public int getDays() {
-            return days;
-        }
-
-        public String getNameUA() {
-            return nameUA;
-        }
-
-        public Season getSeason() {
-            return season;
-        }
-
-        public MonthName getNextMonth() {
-            return values()[(this.ordinal() + 1) % values().length];
-        }
-
-        public MonthName getPreviousMonth() {
-            int previousIndex = this.ordinal() - 1;
-            if (previousIndex < 0) {
-                previousIndex = values().length - 1;
+        try (Scanner scanner = new Scanner(new File(inputFileName))) {
+            // Читання чисел з файлу
+            while (scanner.hasNextInt()) {
+                numbers.add(scanner.nextInt());
             }
-            return values()[previousIndex];
-        }
-    }
-
-    public enum Season {
-        WINTER("Зима"),
-        SPRING("Весна"),
-        SUMMER("Літо"),
-        AUTUMN("Осінь");
-
-        private final String nameUA;
-
-        Season(String nameUA) {
-            this.nameUA = nameUA;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return;
         }
 
-        @Override
-        public String toString() {
-            return nameUA;
-        }
-    }
+        // Сортування за збільшенням суми цифр
+        Collections.sort(numbers, new CompareBySumOfDigits());
 
-    public static void printAllMonths() {
-        for (MonthName month : MonthName.values()) {
-            System.out.println(month.getNameUA() + " - " + month.getDays() + " днів, Сезон: " + month.getSeason());
+        // Запис у файл відсортованих чисел за збільшенням суми цифр
+        try (PrintWriter writer = new PrintWriter(new FileWriter(outputAscFileName))) {
+            for (Integer num : numbers) {
+                writer.print(num + " ");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Сортування за зменшенням суми цифр
+        Collections.sort(numbers, new CompareByReverseSumOfDigits());
+
+        // Запис у файл відсортованих чисел за зменшенням суми цифр
+        try (PrintWriter writer = new PrintWriter(new FileWriter(outputDescFileName))) {
+            for (Integer num : numbers) {
+                writer.print(num + " ");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
     public static void main(String[] args) {
-        LocalDate currentDate = LocalDate.now();
-        int currentMonthIndex = currentDate.getMonthValue();
-        MonthName currentMonth = MonthName.values()[currentMonthIndex - 1];
+        String inputFileName = "./src/lab/task2/input.txt"; // Ім'я файлу з вхідними даними
+        String outputAscFileName = "./src/lab/task2/output_asc.txt"; // Ім'я файлу з результатом сортування за збільшенням суми цифр
+        String outputDescFileName = "./src/lab/task2/output_desc.txt"; // Ім'я файлу з результатом сортування за зменшенням суми цифр
 
-        System.out.println("Поточний місяць: " + currentMonth.getNameUA());
-        System.out.println("Наступний місяць: " + currentMonth.getNextMonth().getNameUA());
-        System.out.println("Попередній місяць: " + currentMonth.getPreviousMonth().getNameUA());
-        System.out.println("Сезон поточного місяця: " + currentMonth.getSeason());
-
-        System.out.println("\nУсі місяці:");
-        printAllMonths();
+        sortAndWriteToFile(inputFileName, outputAscFileName, outputDescFileName);
     }
 }

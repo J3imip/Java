@@ -1,14 +1,16 @@
 package lab.task1;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 /**
  * Call class for PhoneWithArray. Implements Comparable interface.
  *
  * @version 1.0 10 Nov 2023
  */
-public class Call implements Comparable<Call> {
+public class Call implements Comparable<Call>, Serializable {
     private LocalDateTime date;
     private double duration; // in minutes
     private double price;
@@ -79,7 +81,7 @@ public class Call implements Comparable<Call> {
 
     @Override
     public int hashCode() {
-        return Math.abs(date.hashCode());
+        return Objects.hash(date, duration, price);
     }
 
     @Override
@@ -100,10 +102,12 @@ public class Call implements Comparable<Call> {
 
     @Override
     public boolean equals(Object o) {
-        if (o == this) return true;
+        if (this == o) return true;
         if (!(o instanceof Call)) return false;
-
-        return this.hashCode() == o.hashCode();
+        Call other = (Call) o;
+        return Double.compare(other.duration, duration) == 0 &&
+                Double.compare(other.price, price) == 0 &&
+                Objects.equals(other.date, date);
     }
 
     @Override
