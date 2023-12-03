@@ -81,7 +81,7 @@ public class Call implements Comparable<Call>, Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(date, duration, price);
+        return Math.abs(date.hashCode());
     }
 
     @Override
